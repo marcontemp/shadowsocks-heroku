@@ -60,6 +60,30 @@ const server = http.createServer(function(req, res) {
 
 const wss = new WebSocketServer({ server });
 
+// +----+-----+-------+------+----------+----------+
+// |VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
+// +----+-----+-------+------+----------+----------+
+// | 1  |  1  | X'00' |  1   | Variable |    2     |
+// +----+-----+-------+------+----------+----------+
+// VER 协议版本: X’05’
+// REP 应答字段:
+//      X’00’ 成功
+//      X’01’ 普通的SOCKS服务器请求失败
+//      X’02’ 现有的规则不允许的连接
+//      X’03’ 网络不可达
+//      X’04’ 主机不可达
+//      X’05’ 连接被拒
+//      X’06’ TTL超时
+//      X’07’ 不支持的命令
+//      X’08’ 不支持的地址类型
+//      X’09’ – X’FF’ 未定义
+// RSV 保留 (此字段必须设置为X'00')
+// ATYP 后面的地址类型
+//      IPV4：X’01’
+//      域名：X’03’
+//      IPV6：X’04’
+// BND.ADDR 服务器绑定的地址
+// BND.PORT 以网络字节顺序表示的服务器绑定的段口
 wss.on('connection', function(ws) {
   console.log('server connected');
   console.log('concurrent connections:', wss.clients.size);

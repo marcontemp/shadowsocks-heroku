@@ -122,8 +122,16 @@ var server = net.createServer(function(connection) {
       stage = 1;
       return;
     }
-    if (stage === 1) {
+    if (stage === 1) { //COMMENT connect
       try {
+        // VER 协议版本: X’05’
+        // CMD CONNECT：X’01’  BIND：X’02’  UDP ASSOCIATE：X’03’
+        // RSV 保留
+        // ATYP 后面的地址类型  IPV4：X’01’  域名：X’03’  IPV6：X’04’'
+        // DST.ADDR 目的地址
+        // DST.PORT 以网络字节序出现的端口号（网络字节序是TCP/UDP中规定好的一种数据表示格式，
+        //   它与具体的CPU类型、操作系统无关，从而可以保证数据在不同主机之间传输时能够被正确解释，
+        //   网络字节序采用big endian排序方式）
         // +----+-----+-------+------+----------+----------+
         // |VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |
         // +----+-----+-------+------+----------+----------+
@@ -135,6 +143,7 @@ var server = net.createServer(function(connection) {
         const addrtype = data[3];
         if (cmd !== 1) {
           console.log('unsupported cmd:', cmd);
+          //                              X’07’ 不支持的命令
           const reply = new Buffer('\u0005\u0007\u0000\u0001', 'binary');
           connection.end(reply);
           return;
@@ -157,7 +166,7 @@ var server = net.createServer(function(connection) {
           remoteAddr = data.slice(5, 5 + addrLen).toString('binary');
           addrToSend += data.slice(4, 5 + addrLen + 2).toString('binary');
           remotePort = data.readUInt16BE(5 + addrLen);
-          headerLength = 5 + addrLen + 2;
+          headerLength = 5 + addrLen + 2;//TODO whats header means
         }
         let buf = new Buffer(10);
         buf.write('\u0005\u0000\u0000\u0001', 0, 4, 'binary');
