@@ -30,8 +30,8 @@ req.on('error', (e) => {
 
 //req.end();
 */
-requestStr = "localhost";
-port = 80;
+requestStr = "www.baidu.com";
+port = 443;
 step = 1;
 const client = net.createConnection({ port: 1080 }, () => {
     // 'connect' listener
@@ -81,6 +81,9 @@ client.on('data', (data) => {
 });
 client.on('end', () => {
     console.log('disconnected from server');
+});
+client.on('error', () => {
+    console.log('ERROR from server');
 });
 
 

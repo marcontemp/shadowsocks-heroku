@@ -96,7 +96,8 @@ wss.on('connection', function(ws) {
   let remoteAddr = null;
   let remotePort = null;
   ws.on('message', function(data, flags) {
-    data = encryptor.decrypt(data);
+    console.log(data);
+    // data = encryptor.decrypt(data);
     if (stage === 5) {
       remote.write(data);
     }
@@ -135,7 +136,7 @@ wss.on('connection', function(ws) {
           stage = 5;
         });
         remote.on('data', function(data) {
-          data = encryptor.encrypt(data);
+          // data = encryptor.encrypt(data);
           if (ws.readyState === WebSocket.OPEN) {
             ws.send(data, { binary: true });
           }
